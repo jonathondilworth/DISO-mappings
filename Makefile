@@ -10,7 +10,7 @@ ARGS    ?=
 help:
 	@echo "DISO-mappings Makefile commands:"
 	@echo ""
-	@echo "  download-diso           TODO"
+	@echo "  download-diso           Fetch DISO ontologies, save to 'data/diso'."
 	@echo "  compact-ontos           TODO"
 	@echo "  agnostic-labels         TODO"
 	@echo "  mappings MATCHER=<OM>   TODO"
