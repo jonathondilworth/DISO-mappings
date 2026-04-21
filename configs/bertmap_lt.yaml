@@ -1,0 +1,20 @@
+###
+# BERTMapLt CONFIG
+###
+
+heap: 8g
+
+# Annotation-property IRIs used to derive synonym text for classes.
+# Omit to use DeepOnto's defaults.
+
+# DeepOnto defaults: rdfs:label plus the usual synonym
+# and altLabel properties — see the DeepOnto tutorial
+# for the full list.
+
+# Override to use non-standard annotation properties:
+
+# annotation_property_iris:
+#   - http://www.w3.org/2000/01/rdf-schema#label
+#   - http://www.w3.org/2004/02/skos/core#prefLabel
+#   - http://www.w3.org/2004/02/skos/core#altLabel
+
