@@ -1,0 +1,16 @@
+name: diso-mappings
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.11
+  - pip
+  - openjdk=11
+  - pyyaml
+  - rdflib
+  - pytest
+  - python-dotenv
+
+  - pip:
+      - deeponto
+      - transformers<4.46

@@ -1,0 +1,8 @@
+###
+# CONFIG FILE FOR AML
+###
+
+aml_dir: matchers/aml/AML_v3.2
+heap: 8g
+mode: auto
+

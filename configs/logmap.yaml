@@ -1,0 +1,8 @@
+###
+# LOGMAP CONFIG
+###
+
+logmap_dir: matchers/logmap
+heap: 8g
+classify: false
+
