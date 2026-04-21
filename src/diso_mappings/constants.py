@@ -1,3 +1,15 @@
+###
+#
+###
+DISO_REPO_LOCATION = {
+    "repo": "city-artificial-intelligence/diso",
+    "ref": "main",
+}
+
+###
+# FOR DEBUGGING WITH --verbose
+# \w BERTMap
+###
 VERBOSE_LOGGING_PKGS = [
     "httpcore",
     "httpx",

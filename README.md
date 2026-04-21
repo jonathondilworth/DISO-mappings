@@ -14,9 +14,16 @@ It can also be used to provide a _silver standard reference alignment **(TODO)**
 Setup your environment using the provided `environment.yml` file:
 
 ```sh
-conda create env --file enviornment.yml
+conda env create --file environment.yml
 conda activate diso-mappings
+pip install -e .
 ```
+
+### Download, Extract & Pre-process DISO
+
+For convienence, we provide a [`Makefile`](./Makefile) which provides commands:
+
+1. `make download-diso` downloads the **full set of** DISO ontologies to `./data/diso`.
 
 ## Usage
 
