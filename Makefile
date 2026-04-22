@@ -5,14 +5,14 @@ MATCHER ?= "$(error MATCHER is required.)"
 PAIRS   ?= configs/pairs.example.yaml
 ARGS    ?=
 
-.PHONY: help download-ontologies normalise-ontologies augment-onto-labels mappings test clean list-matchers
+.PHONY: help download-diso diso-compact agnostic-labels mappings clean
 
 help:
 	@echo "DISO-mappings Makefile commands:"
 	@echo ""
 	@echo "  download-diso           Fetch DISO ontologies, saves to 'data/diso'."
 	@echo "  diso-compact            Extract DISO compact, saves to 'data/diso-compact'. TODO: add validation step."
-	@echo "  agnostic-labels         TODO"
+	@echo "  agnostic-labels         Use IRI-extracted 'local names' as rdfs:label annotations (for classes w/o anns)."
 	@echo "  mappings MATCHER=<OM>   TODO"
 	@echo "  clean                   TODO"
 	@echo ""
@@ -23,7 +23,7 @@ download-diso:
 diso-compact:
 	$(PYTHON) scripts/extract_compact_diso.py $(ARGS)
 
-agnostic-labels: compact-ontos
+agnostic-labels: diso-compact
 	$(PYTHON) scripts/preprocess_labels_om.py $(ARGS)
 
 mappings:
