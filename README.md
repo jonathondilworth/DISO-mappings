@@ -34,7 +34,7 @@ _TODO_
 
 1. A compact version of DISO — one with less structure and no documentation, and hence better suited to machine processing:
 
-> "To further facilitate reuse of the DISO collection as a research resource, a condensed version of the DISO collection is available within the DISO repository. We call this condensed version ‘DISO compact’. DISO compact has a simpler folder structure and no documentation. In DISO compact, there is one folder for each DISO cluster, with each cluster folder containing one ontology file for each ontology assigned to that cluster. DISO compact is presented as an archive (.zip) file within the DISO repository. The general idea is that researchers would download DISO compact for use in software applications, while using the online DISO repository for context and documentation." [1]
+> "To further facilitate reuse of the DISO collection as a research resource, a condensed version of the DISO collection is available within the DISO repository. We call this condensed version ‘DISO compact’. DISO compact has a simpler folder structure and no documentation. In DISO compact, there is one folder for each DISO cluster, with each cluster folder containing one ontology file for each ontology assigned to that cluster. DISO compact is presented as an archive (.zip) file within the DISO repository. The general idea is that researchers would download DISO compact for use in software applications, while using the online DISO repository for context and documentation." [4]
 
 **References:**
 
