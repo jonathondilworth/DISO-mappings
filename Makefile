@@ -10,8 +10,8 @@ ARGS    ?=
 help:
 	@echo "DISO-mappings Makefile commands:"
 	@echo ""
-	@echo "  download-diso           Fetch DISO ontologies, save to 'data/diso'."
-	@echo "  compact-ontos           TODO"
+	@echo "  download-diso           Fetch DISO ontologies, saves to 'data/diso'."
+	@echo "  diso-compact            Extract DISO compact, saves to 'data/diso-compact'. TODO: add validation step."
 	@echo "  agnostic-labels         TODO"
 	@echo "  mappings MATCHER=<OM>   TODO"
 	@echo "  clean                   TODO"
@@ -20,7 +20,7 @@ help:
 download-diso:
 	$(PYTHON) scripts/download_diso.py $(ARGS)
 
-compact-ontos:
+diso-compact:
 	$(PYTHON) scripts/extract_compact_diso.py $(ARGS)
 
 agnostic-labels: compact-ontos
