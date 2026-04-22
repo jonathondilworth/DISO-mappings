@@ -47,6 +47,7 @@ class OntologyRegistry:
     """
     def __init__(self, ontologies: dict[str, Ontology]):
         self._ontologies = ontologies # can be an empty dict
+        self._verbose: bool = False
 
     def __contains__(self, name_id: str) -> bool:
         return name_id in self._ontologies
@@ -63,8 +64,8 @@ class OntologyRegistry:
         if not isinstance(ontology_inst, Ontology):
             raise TypeError(f"The specified ontology is of the wrong type: {type(ontology_inst).__name__}")
         if name_id in self._ontologies:
-            info(f"{name_id!r} is already bound.")
-            info(f"Bind retains attributes from the initial call, while unionising cluster membership.")
+            if self._verbose:
+                info(f"{name_id!r} is already bound [UNIONISING CLUSTER MEMBERSHIP].")
             self._ontologies[name_id].clusters.update(ontology_inst.clusters)
             return self._ontologies[name_id]
         # else: new ontology instance
@@ -83,6 +84,10 @@ class OntologyRegistry:
         return sorted([
             ontology for ontology in self._ontologies.values() if cluster in ontology.clusters
         ], key=lambda ontology: ontology.name_id)
+    
+    def toggle_verbose(self) -> bool:
+        self._verbose = not self._verbose
+        return self._verbose
 
 
 
