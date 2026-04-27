@@ -1,0 +1,23 @@
+###
+# PAIRS IN PAPER
+# NOTE: to successfully run `make no-dead-imports` 
+# must have been applied to the ontology registry
+###
+
+pairs:
+  - source: uco1-merge
+    target: stix-spec-merged
+  - source: stix-spec-merged
+    target: d3fend
+  - source: JC3IEDM
+    target: mIOmerged-noimports
+  - source: JC3IEDM
+    target: Brick+imports
+  - source: ThinkHomeMerged
+    target: Brick+imports
+  - source: Brick+imports
+    target: SmartEnvMerged
+  - source: CityOWLmerged
+    target: Brick+imports
+  - source: JC3IEDM
+    target: FacilityOntology-no-import

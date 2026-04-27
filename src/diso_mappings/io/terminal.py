@@ -76,6 +76,19 @@ def _should_colour(stream) -> bool:
     return hasattr(stream, "isatty") and stream.isatty()
 
 
+def _should_animate(stream=sys.stdout) -> bool:
+    """
+    In-place line updates (eg. timer), are a form of animation (included for UX). 
+    Assumption: if the user sets NO_COLOR (env), then we do not animate. bool return 
+    reprs line updates safe on stream (mirrors _should_colour)
+    """
+    if os.environ.get("NO_COLOR"):
+        return False
+    if os.environ.get("FORCE_COLOR"):
+        return True
+    return hasattr(stream, "isatty") and stream.isatty()
+
+
 def configure(level: int = logging.INFO, stream = sys.stdout) -> None:
     """
     Logger setup (idempotent); call once near program entry.
@@ -90,6 +103,68 @@ def configure(level: int = logging.INFO, stream = sys.stdout) -> None:
     logger.addHandler(handler)
     logger.setLevel(level)
     logger.propagate = False
+
+
+class LiveStatusLine:
+    """
+    INFO-formatted line that can be tail-rewritten in place for providing
+    status updates wwhile a subprocess runs. Example:
+      with LiveStatusLine(f"BERTMapLt: matching {src} -> {tgt}") as status:
+          # ...
+          status.update("[00:42]")
+          # on completion: context exit prints final update
+    WARNING: Not thread-safe.
+    """
+    def __init__(self, prefix: str, stream=sys.stdout):
+        self._prefix: str            = prefix
+        self._stream                 = stream
+        self._animate: bool          = _should_animate(stream)
+        self._started: bool          = False
+        self._last_suffix_width: int = 0 # padding
+
+
+    def __enter__(self) -> "LiveStatusLine":
+        if not self._animate:
+            info(self._prefix)
+        else: # imitates the logger w/ decoration
+            prefix_label = "INFO"
+            if _should_colour(self._stream):
+                prefix_label = f"{_COLOURS[logging.INFO]}INFO{_RESET}"
+            self._stream.write(f"{prefix_label} {self._prefix}")
+            self._stream.flush()
+            self._started = True
+        # finally:
+        return self
+
+
+    def update(self, suffix: str) -> None:
+        """
+        Rewrite the status line tail w/ suffix (eg. timer); no FX on non-TTY
+        """
+        if not self._animate or not self._started:
+            return # skip
+        # else: tail-rewrite
+        prefix_label = "INFO"
+        if _should_colour(self._stream):
+            prefix_label = f"{_COLOURS[logging.INFO]}INFO{_RESET}"
+        # readable UX
+        separator = "   "
+        padding_width = max(0, self._last_suffix_width - len(suffix))
+        tail = separator + suffix + (" " * padding_width)
+        self._stream.write(f"\r{prefix_label} {self._prefix}{tail}")
+        self._stream.flush()
+        # also update padding accordingly
+        self._last_suffix_width = len(suffix)
+
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        """
+        Terminates on a newline.
+        """
+        if self._animate and self._started:
+            self._stream.write("\n")
+            self._stream.flush()
+        return None # re-raises exceptions (on occurance)
 
 
 

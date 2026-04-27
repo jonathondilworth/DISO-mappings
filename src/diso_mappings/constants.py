@@ -55,6 +55,7 @@ ONTOLOGY_EXCLUSIONS = frozenset({
     "cco-modules"
 })
 
+# ONTOLOGY_EXCLUSIONS = frozenset({})
 
 
 ##
@@ -67,7 +68,7 @@ ONTOLOGY_EXCLUSIONS = frozenset({
 # suppression with a verbose flag. eg. make mappings MATCHER=bertmap ARGS='--verbose'
 ##
 
-VERBOSE_LOGGING_PKGS = [
+VERBOSE_LOGGING_PKGS: tuple[str] = (
     "httpcore",
     "httpx",
     "urllib3",
@@ -77,5 +78,4 @@ VERBOSE_LOGGING_PKGS = [
     "datasets",
     "huggingface_hub",
     "transformers",
-]
-
+) # immutable

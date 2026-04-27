@@ -1,0 +1,18 @@
+###
+# LogMapLt CONFIG
+# Lexical-only ontology matching w/ no logical repair.
+###
+
+# LogMap and LogMapLt run off the same JAR
+logmap_dir: matchers/logmap
+
+# Path to the java executable
+# the resolution order: this key > $JAVA env var > 'java' on PATH
+# java: java
+
+# JVM max heap (-Xmx); default to 8g
+heap: 8g
+
+# Additional JVM flags appended after the adapter's base set, eg.
+# [-Xms500M, -DentityExpansionLimit=10000000, --add-opens java.base/java.lang]
+# extra_jvm_args: []

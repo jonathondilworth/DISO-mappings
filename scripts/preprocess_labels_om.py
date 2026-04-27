@@ -17,6 +17,7 @@ NOTE: THIS SCRIPT IS AN OPTIONAL PREPROCESSING STEP. If you would rather leave t
 completely unmodified, simply omit `make agnostic-labels` from your pipeline. Rerunning is 
 idempotent (classes that already have an rdfs:label are left alone).
 """
+
 from __future__ import annotations
 
 import argparse
@@ -30,6 +31,11 @@ from diso_mappings.paths import COMPACT_DIR, ONTO_REGISTRY_FILE
 from diso_mappings.preprocessing import enrich_onto_labels
 from diso_mappings.registry import OntologyRegistry
 from diso_mappings.io.terminal import configure, info, warn, error, debug, success
+from diso_mappings._rdflib_common import (
+    install_rdflib_quiet_filter,
+    get_rdflib_suppressed_count,
+    reset_rdflib_suppressed_count,
+)
 
 
 _ENRICHMENT_REPORT_FILE = COMPACT_DIR / "_enrichment_report.yaml"
@@ -52,6 +58,12 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    ###
+    # SETUP
+    ###
+
+    sys.setrecursionlimit(48000) # cannot parse some ontologies otherwise!
+
     ##
     # LOGGING SETUP
     ##
@@ -60,6 +72,13 @@ def main() -> int:
         level=logging.DEBUG if args.verbose else logging.INFO,
         stream=sys.stdout
     )
+
+    ##
+    # ADD FILTER FOR RDFLIB
+    # (FOR PARSE ERRORS OF LOW CONSEQUENCE)
+    ##
+
+    install_rdflib_quiet_filter()
 
     ##
     # REGISTRY LOAD
@@ -83,6 +102,7 @@ def main() -> int:
     total_classes_without_label = 0
     total_classes_enriched = 0
     total_classes_skipped_empty = 0
+    total_rdflib_suppressed = 0
 
     for this_name_id in onto_name_ids:
 
@@ -91,26 +111,38 @@ def main() -> int:
 
         debug(f"Enriching {this_name_id} ({this_onto_path.relative_to(COMPACT_DIR)})")
 
+        reset_rdflib_suppressed_count()
+
         try:
             enrichment_result = enrich_onto_labels(this_onto_path, dry_run=args.dry_run)
         except Exception as enrichment_exception:
             # rdflib can fail on some DISO files (edge cases in OWL/RDF serialisation)
             # OWL API-based matchers (AML, LogMap) handle these natively, so we log
             # and continue rather than abort the whole run
+            this_rdflib_suppressed = get_rdflib_suppressed_count()
+            total_rdflib_suppressed += this_rdflib_suppressed
             failure_reason = f"{type(enrichment_exception).__name__}: {str(enrichment_exception)[:200]}"
             warn(f"Skipping {this_name_id}: {failure_reason}")
             skipped_ontologies.append({
                 "name":   this_name_id,
                 "path":   str(this_onto_path.relative_to(COMPACT_DIR)),
                 "reason": failure_reason,
+                "rdflib_suppressed": this_rdflib_suppressed,
             })
             continue
+
+        this_rdflib_suppressed = get_rdflib_suppressed_count()
+        total_rdflib_suppressed += this_rdflib_suppressed
+
+        if this_rdflib_suppressed > 0:
+            debug(f"{this_name_id}: suppressed {this_rdflib_suppressed} (possible malformed xsd:date in source)")
 
         per_ontology_results[this_name_id] = {
             "classes":                  enrichment_result["classes_seen"],
             "without_label":            enrichment_result["classes_without_label"],
             "enriched":                 enrichment_result["classes_enriched"],
             "skipped_empty_local_name": enrichment_result["classes_skipped_empty_local_name"],
+            "rdflib_suppressed":        this_rdflib_suppressed,
         }
 
         total_classes_seen           += enrichment_result["classes_seen"]
@@ -137,14 +169,18 @@ def main() -> int:
     
     info("\n".join(report_lines))
 
+    if total_rdflib_suppressed > 0:
+        warn(f"Suppressed {total_rdflib_suppressed} literal-conversion warning(s).")
+
     enrichment_report = {
         "totals": {
-            "ontologies_processed":             len(per_ontology_results),
-            "ontologies_skipped":               len(skipped_ontologies),
-            "classes_seen":                     total_classes_seen,
-            "classes_without_rdfs_label":       total_classes_without_label,
-            "classes_enriched":                 total_classes_enriched,
-            "classes_skipped_empty_local_name": total_classes_skipped_empty,
+            "ontologies_processed":                 len(per_ontology_results),
+            "ontologies_skipped":                   len(skipped_ontologies),
+            "classes_seen":                         total_classes_seen,
+            "classes_without_rdfs_label":           total_classes_without_label,
+            "classes_enriched":                     total_classes_enriched,
+            "classes_skipped_empty_local_name":     total_classes_skipped_empty,
+            "rdflib_literal_conversion_suppressed": total_rdflib_suppressed,
         },
         "per_ontology": per_ontology_results,
         "skipped":      skipped_ontologies,

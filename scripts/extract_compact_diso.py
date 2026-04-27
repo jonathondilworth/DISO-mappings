@@ -1,5 +1,5 @@
 """
-Python script for preparing the DISO compact ontology network for matching.
+Python script for preparing the DISO compact ontology network for matching
 
 This is what runs when you execute: `make compact-ontos`, broadly it:
 
@@ -12,10 +12,6 @@ This is what runs when you execute: `make compact-ontos`, broadly it:
        readability; see registry.py).
     
     3. Writes the registry to disk at 'data/diso-compact/_registry.yaml'.
-    
-    4. [OPTIONALLY TODO] we might validate that the ontologies are parseable 
-       (initial tests suggest rdflib fails for 2 of 60 ontologies; not yet
-       tried replacing rdflib w/ owlready2 or just using DeepOnto).
 
 If there are any issues with formats, then this is probably the place to
 implement a conversion step _(maybe)_.
@@ -35,7 +31,6 @@ from diso_mappings.registry import OntologyRegistry
 from diso_mappings.io.terminal import configure, highlight, info, error, debug, success
 
 _ZIP_PATH = DISO_DIR / "diso-compact" / "diso-compact.zip"
-
 
 
 def _extract_zip(zip_path: Path, zip_out_dest: Path) -> None:
