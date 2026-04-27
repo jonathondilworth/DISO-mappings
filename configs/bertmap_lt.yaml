@@ -4,14 +4,21 @@
 
 heap: 8g
 
+# opt to use ELK due to the occurance of SWRL
+# however, it does mean that we use OWL EL Profile
+# not OWL DL ...
+
+reasoner_type: "elk"
+#reasoner_type: "hermit"
+#reasoner_type: "struct"
+
 # Annotation-property IRIs used to derive synonym text for classes.
 # Omit to use DeepOnto's defaults.
 
 # DeepOnto defaults: rdfs:label plus the usual synonym
-# and altLabel properties — see the DeepOnto tutorial
-# for the full list.
+# and altLabel properties (see DeepOnto docs)
 
-# Override to use non-standard annotation properties:
+# to override to use non-standard annotation properties use:
 
 # annotation_property_iris:
 #   - http://www.w3.org/2000/01/rdf-schema#label

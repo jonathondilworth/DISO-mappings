@@ -14,7 +14,7 @@ from pathlib import Path
 
 from diso_mappings.paths import DISO_DIR
 from diso_mappings.constants import DISO_REPO_LOCATION
-from diso_mappings.io.terminal import init
+from diso_mappings.io.terminal import highlight
 
 log = logging.getLogger("download_diso")
 
@@ -84,7 +84,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    init("Starting download DISO script.")
+    highlight("Starting download DISO script.")
 
     logging.basicConfig(
         level=logging.DEBUG if args.verbose else logging.INFO,
