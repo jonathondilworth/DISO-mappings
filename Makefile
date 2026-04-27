@@ -2,7 +2,7 @@
 
 PYTHON  ?= python
 MATCHER ?= aml logmap_lt logmap bertmap_lt bertmap
-PAIRS   ?= configs/pairs.example.yaml
+PAIRS   ?= configs/pairs.paper.yaml
 ARGS    ?=
 
 .PHONY: help download-diso diso-compact local-labels imports-parseable mappings clean

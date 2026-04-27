@@ -12,5 +12,8 @@ dependencies:
   - python-dotenv
 
   - pip:
+      - --extra-index-url https://download.pytorch.org/whl/cu126
+      - "torch"
+      - "torchvision"
       - "deeponto @ git+https://github.com/jonathondilworth/DeepOnto.git@72e98b18f27177d35a4e5d74be0565f653b4533d"
       - "transformers"
