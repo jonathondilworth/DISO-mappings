@@ -88,7 +88,7 @@ d3fend_graph = rdflib.Graph()
 d3fend_graph.parse(str(D3FEND_TTL_PATH), format='turtle')
 d3fend_graph.serialize(destination=str(D3FEND_RDF_PATH), format='xml')
 
-print(f"Converted {len(g)} triples from d3fend.ttl to d3fend.rdf")
+print(f"Converted {len(d3fend_graph)} triples from d3fend.ttl to d3fend.rdf")
 
 d3fend_onto = Ontology("d3fend-rdf-xml", D3FEND_RDF_PATH, clusters={'cyber-security'})
 diso_compact_onto_registry.bind("d3fend-rdf-xml", d3fend_onto)
