@@ -6,4 +6,4 @@ pairs:
   - source: uco2
     target: stix-spec-merged
   - source: stix-spec-merged
-    target: d3fend
+    target: d3fend-rdf-xml
