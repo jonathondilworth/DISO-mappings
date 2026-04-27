@@ -20,7 +20,7 @@ diso_compact_onto_registry = OntologyRegistry.load(DISO_ONTO_REGISTRY_FP)
 
 DEAD_IMPORT_MIOMERGED = rdflib.URIRef('http://ontologies.ezweb.morfeo-project.org/profile.owl')
 MIOMERGED_ONTOLOGY_PATH = Path(COMPACT_DIR / 'context-awareness' / 'mIOmerged.ttl')
-MIOMERGED_ONTOLOGY_NO_IMPORTS_PATH = Path(COMPACT_DIR / 'context-awareness' / 'FacilityOntology-noimports.rdf')
+MIOMERGED_ONTOLOGY_NO_IMPORTS_PATH = Path(COMPACT_DIR / 'context-awareness' / 'mIOmerged-noimports.ttl')
 
 miomerged_graph = rdflib.Graph()
 miomerged_graph.parse(MIOMERGED_ONTOLOGY_PATH, format='turtle')
@@ -39,9 +39,9 @@ print(f"Wrote {len(miomerged_graph)} triples to mIOmerged-noimports.rdf")
 
 print(f'Registering mIOmerged-noimports.rdf with OntologyRegistry.')
 
-facility_ontology = Ontology("mIOmerged-noimports", MIOMERGED_ONTOLOGY_NO_IMPORTS_PATH, {'context-awareness'})
+m_io_merged = Ontology("mIOmerged-noimports", MIOMERGED_ONTOLOGY_NO_IMPORTS_PATH, {'context-awareness'})
 
-diso_compact_onto_registry.bind("mIOmerged-noimports", facility_ontology)
+diso_compact_onto_registry.bind("mIOmerged-noimports", m_io_merged)
 
 print(f'Bound!')
 
@@ -75,6 +75,25 @@ facility_ontology = Ontology("FacilityOntology-noimports", FACILITY_ONTOLOGY_NO_
 diso_compact_onto_registry.bind("FacilityOntology-noimports", facility_ontology)
 
 print(f'Bound!')
+
+##
+# AML has problems with d3fend in its current format
+# as such, we convert from TTL to RDF & re-register it as 
+##
+
+D3FEND_TTL_PATH = COMPACT_DIR / 'cyber-security' / 'd3fend.ttl'
+D3FEND_RDF_PATH = COMPACT_DIR / 'cyber-security' / 'd3fend.rdf'
+
+d3fend_graph = rdflib.Graph()
+d3fend_graph.parse(str(D3FEND_TTL_PATH), format='turtle')
+d3fend_graph.serialize(destination=str(D3FEND_RDF_PATH), format='xml')
+
+print(f"Converted {len(g)} triples from d3fend.ttl to d3fend.rdf")
+
+d3fend_onto = Ontology("d3fend-rdf-xml", D3FEND_RDF_PATH, clusters={'cyber-security'})
+diso_compact_onto_registry.bind("d3fend-rdf-xml", d3fend_onto)
+
+print(f"Registry updated: d3fend-rdf-xml -> {D3FEND_RDF_PATH.relative_to(COMPACT_DIR)}")
 
 print(f'Saving updated OntologyRegistery to disk.')
 

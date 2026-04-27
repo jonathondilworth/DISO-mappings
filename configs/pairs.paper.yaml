@@ -8,7 +8,7 @@ pairs:
   - source: uco1-merge
     target: stix-spec-merged
   - source: stix-spec-merged
-    target: d3fend
+    target: d3fend-rdf-xml
   - source: JC3IEDM
     target: mIOmerged-noimports
   - source: JC3IEDM
