@@ -1,7 +1,8 @@
 ###
 # PAIRS IN PAPER
-# NOTE: to successfully run `make no-dead-imports` 
-# must have been applied to the ontology registry
+# NOTE: to successfully OM each pair, run `make imports-parseable` 
+# since some source-target pairs have imports that hang or require RDF conversion
+# _the easiest way to re-produce our mappings is to run `make` in a fresh repo w/ deps installed_
 ###
 
 pairs:
@@ -20,4 +21,4 @@ pairs:
   - source: CityOWLmerged
     target: Brick+imports
   - source: JC3IEDM
-    target: FacilityOntology-no-import
+    target: FacilityOntology-noimports
