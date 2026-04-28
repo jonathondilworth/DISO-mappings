@@ -57,9 +57,10 @@ To pass extra arguments to `scripts/run_matcher.py`:
 make mappings MATCHER=bertmap PAIRS=configs/pairs.paper.yaml ARGS='--verbose --timeout=7200 --force'
 ```
 
-`ARGS` are forwarded as specified. The --force option reprocesses pairs that already have alignment files. Without it, existing alignments are skipped, permitting efficient resumption after partial failures.
+`ARGS` are forwarded as specified. The --force option reprocesses pairs that already have alignment files.
 
 For a summary of available Make targets, run `make help`.
+
 ## Project Structure
 
 ```
@@ -116,6 +117,7 @@ For a summary of available Make targets, run `make help`.
 Note that you can expect two additional directories to be created during use:
   1. The `data` directory is populated by running `make download-diso`.
   2. The `runs` directory is populated by running `make mappings`.
+
 ## Matchers
 
 |Name|Family|Confidence scores|GPU required|Notes|
@@ -132,7 +134,7 @@ Configuration for each matcher is specified in `configs/<matcher>.yaml`. The con
 
 ## Pairs
 
-A pair list is a YAML file with a single top-level key named `pairs`. Sources and targets are identified by their **registered filename stem in** `_registry.yaml` (such as JC3IEDM or `Brick+imports`); i.e., these serve as the canonical identifiers used by `OntologyRegistry`. Any identifier registered in `data/diso-compact/_registry.yaml` is valid. **Self-pairs and duplicate pairs result in an error.**
+A pair list is a YAML file with a single top-level key named `pairs`. Sources and targets are identified by their **registered filename stem in** `_registry.yaml` (such as `JC3IEDM` or `Brick+imports`); i.e., these serve as the canonical identifiers used by `OntologyRegistry`. Any identifier registered in `data/diso-compact/_registry.yaml` is valid. **Self-pairs and duplicate pairs result in an error.**
 
 An example pair:
 
@@ -161,15 +163,17 @@ runs/<matcher>/<UTC-timestamp>/
     └── <source>__<target>.err      # exception text for any failures
 ```
 
-Output directories are preserved and not overwritten. Each re-run creates a new timestamped output directory. The skip-if-exists check runs within a directory, allowing resumption of failed runs by passing `--output-dir` to `scripts/run_matcher.p`y.
+Output directories are preserved and not overwritten. Each re-run creates a new timestamped output directory. The skip-if-exists check runs within a directory, allowing resumption of failed runs by passing `--output-dir` to `scripts/run_matcher.py`.
 
 The OAEI RDF output serves as the canonical format. To inspect an alignment programmatically, apply the following approach:
 
 ```python
 from diso_mappings.io.alignment import read_alignment
 
-alignment = read_alignment("runs/aml/20251201T120000Z/alignments/uco2__stix-spec-merged.rdf")
+alignment = read_alignment("runs/aml/<RUN_ID>/alignments/<ONTO_ONE_NAME>__<ONTO_TWO_NAME>.rdf")
+
 print(f"{len(alignment.mappings)} mappings between {alignment.onto1_iri} and {alignment.onto2_iri}")
+
 for m in alignment.mappings[:5]:
     print(f"  {m.entity1}  {m.relation}  {m.entity2}  ({m.measure:.3f})")
 ```
@@ -249,7 +253,7 @@ Verify that the matcher has been registered:
 python scripts/run_matcher.py --matcher mymatcher --pairs configs/pairs.example.yaml
 ```
 
-For matchers that rely on an external JAR, refer to `aml.py` or `logmap.py` for the subprocess pattern, which includes per-pair temporary directories, `run_subprocess_with_timeout`, and post-run output validation. For Python matchers that are stateful or may leak memory across invocations, such as those loading large neural models, consult the BERTMap workers under `_workers/` for the per-pair subprocess isolation approach.
+For matchers that rely on an external JAR, refer to [`aml.py`](src/diso_mappings/matchers/aml.py) or [`logmap.py`](src/diso_mappings/matchers/logmap.py) for the subprocess pattern, which includes per-pair temporary directories, `run_subprocess_with_timeout`, and post-run output validation. For Python matchers that are stateful or may leak memory across invocations, such as those loading large neural models, consult the BERTMap workers under [`_workers/`](src/diso_mappings/matchers/_workers) for the per-pair subprocess isolation approach.
 
 ## Project Roadmap
 
