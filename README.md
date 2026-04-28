@@ -223,7 +223,11 @@ class MyMatcher(Matcher):
         out_path = out_dir / f"{source.stem}__{target.stem}.rdf"
 
         t0 = time.time()
-        # ...your matching logic populates `mappings` here...
+
+        ##                                                           ##
+        # --> ...your matching logic populates `mappings` here... <-- #
+        ##                                                           ##
+
         alignment = Alignment(
             onto1_iri=source.resolve().as_uri(),
             onto2_iri=target.resolve().as_uri(),
