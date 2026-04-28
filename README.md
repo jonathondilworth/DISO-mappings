@@ -124,9 +124,9 @@ Note that you can expect two additional directories to be created during use:
 |---|---|---|---|---|
 |`aml`|AML|yes|no|AgreementMakerLight 3.2; auto mode only|
 |`logmap`|LogMap|yes|no|LogMap 2 with logical repair|
-|`logmap_lt`|LogMap|partial|no|LogMap-Lite; lexical only, scores are uniform|
-|`bertmap`|BERTMap|yes|**yes**|BERT fine-tuning + LogMap repair (DeepOnto)|
-|`bertmap_lt`|BERTMap|yes|no|String-distance variant (DeepOnto)|
+|`logmap_lt`|LogMap|no|no|LogMap-Lite; lexical only, scores are uniform|
+|`bertmap`|BERTMap|-|**yes**|BERT fine-tuning + LogMap repair (DeepOnto)|
+|`bertmap_lt`|BERTMap|-|no|String-distance variant (DeepOnto)|
 
 The `family` attribute is used by _the planned_ consensus component to prevent correlated matchers from artificially inflating agreement unfairly. For instance, BERTMap and BERTMapLt are counted as a single entry toward the "BERTMap family" rather than as two separate entries. Precise consensus semantics are yet to be documented.
 
