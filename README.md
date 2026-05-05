@@ -270,12 +270,12 @@ For matchers that rely on an external JAR, refer to [`aml.py`](src/diso_mappings
 
 ## Known issues and limitations
 
-- **BERTMap on CPU is unsupported** in this version. The adapter raises `NotImplementedError`.
-- `**d3fend.ttl**` **is converted to RDF/XML** during `imports-parseable` because AML cannot parse it as Turtle. The converted file is registered as `d3fend-rdf-xml`.
-- **Two ontologies (**`**mIOmerged**`**,** `**FacilityOntology**`**) have dead** `**owl:imports**` that prevent the matchers from running. `imports-parseable` strips them and registers the cleaned files under the `*-noimports` names referenced in `pairs.paper.yaml`.
-- **LogMap’s translation module** emits stack traces from a defunct Google Translate endpoint. This is a known upstream issue in the 2021 LogMap release; it will break the pipeline; you must recompile the source or use the patched version shipped in this repository under `matchers/logmap` _(replacing this with your own compiled LogMap JAR may still introduce issues)._
-- `**FacilityOntology**` **requires a raised recursion limit.** `scripts/run_matcher.py` sets `sys.setrecursionlimit(48000)` for this reason.
-- **DeepOnto patches.** The pinned DeepOnto fork patches minor upstream issues.
+- BERTMap on CPU is unsupported in this version. The adapter raises `NotImplementedError`.
+- `d3fend.ttl` is converted to RDF/XML during `imports-parseable` because AML cannot parse it as Turtle. The converted file is registered as `d3fend-rdf-xml`.
+- Two ontologies (`mIOmerged`, `FacilityOntology`) have dead `owl:imports` that prevent the matchers from running. `imports-parseable` strips them and registers the cleaned files under the `*-noimports` names referenced in `pairs.paper.yaml`.
+- LogMap’s translation module emits stack traces from a defunct Google Translate endpoint. This is a known upstream issue in the 2021 LogMap release; it will break the pipeline; you must recompile the source or use the patched version shipped in this repository under `matchers/logmap` _(replacing this with your own compiled LogMap JAR may still introduce issues)._
+- `FacilityOntology` requires a raised recursion limit. `scripts/run_matcher.py` sets `sys.setrecursionlimit(48000)` for this reason.
+- DeepOnto patches. The pinned DeepOnto fork patches minor upstream issues.
 
 ## Citations
 
