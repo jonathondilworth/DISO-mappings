@@ -20,7 +20,7 @@ diso_compact_onto_registry = OntologyRegistry.load(DISO_ONTO_REGISTRY_FP)
 
 DEAD_IMPORT_MIOMERGED = rdflib.URIRef('http://ontologies.ezweb.morfeo-project.org/profile.owl')
 MIOMERGED_ONTOLOGY_PATH = Path(COMPACT_DIR / 'context-awareness' / 'mIOmerged.ttl')
-MIOMERGED_ONTOLOGY_NO_IMPORTS_PATH = Path(COMPACT_DIR / 'context-awareness' / 'mIOmerged-noimports.ttl')
+MIOMERGED_ONTOLOGY_NO_IMPORTS_PATH = Path(COMPACT_DIR / 'context-awareness' / 'mIOmerged-noimports.rdf')
 
 miomerged_graph = rdflib.Graph()
 miomerged_graph.parse(MIOMERGED_ONTOLOGY_PATH, format='turtle')
@@ -98,3 +98,32 @@ print(f"Registry updated: d3fend-rdf-xml -> {D3FEND_RDF_PATH.relative_to(COMPACT
 print(f'Saving updated OntologyRegistery to disk.')
 
 diso_compact_onto_registry.save(DISO_ONTO_REGISTRY_FP)
+
+
+##
+# Brick: clamp SHACL sh:maxInclusive constraints that exceed int64
+#
+# Brick declares three sh:maxInclusive constraints set to UINT64_MAX
+# (2^64 - 1 = 18446744073709551615). xsd:integer is unbounded so this
+# is technically valid RDF, but owlready2's SQLite backend stores
+# integer literals in signed INT64 columns and overflows during cache
+# build. None of our matchers read SHACL constraints, so clamping to
+# INT64_MAX (2^63 - 1 = 9223372036854775807) is purely cleanup of a
+# load-time blocker; matching behaviour is unaffected.
+###
+
+BRICK_PATH     = COMPACT_DIR / 'smart-environments' / 'smart-buildings' / 'Brick+imports.ttl'
+UINT64_MAX_STR = "18446744073709551615"
+INT64_MAX_STR  = "9223372036854775807"
+
+brick_text = BRICK_PATH.read_text()
+n_brick_clamps = brick_text.count(UINT64_MAX_STR)
+
+if n_brick_clamps > 0:
+    BRICK_PATH.write_text(brick_text.replace(UINT64_MAX_STR, INT64_MAX_STR))
+    print(
+        f"Clamped {n_brick_clamps} SHACL maxInclusive literal(s) in Brick+imports.ttl "
+        f"({UINT64_MAX_STR} -> {INT64_MAX_STR})"
+    )
+else:
+    print("No SHACL maxInclusive overflows in Brick+imports.ttl (already clamped)")
