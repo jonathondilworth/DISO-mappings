@@ -1,0 +1,47 @@
+##
+# NOTE:
+# include (as pip dep: "logmap-llm @ git+https://github.com/city-artificial-intelligence/logmap-llm/pull/1")
+# ^ may change - shipped as experimental
+##
+
+logmap_dir: matchers/logmap
+
+heap: 8g
+java: java
+extra_jvm_args: []
+
+oracle_model_name: Qwen/Qwen3-32B
+oracle_base_url: http://localhost:8000/v1
+oracle_api_key_env: null
+oracle_interaction_style: vllm
+oracle_temperature: 0.0
+oracle_top_p: 1.0
+oracle_max_completion_tokens: 32768
+oracle_enable_thinking: false
+oracle_reasoning_effort: minimal
+oracle_max_workers: 24
+oracle_failure_tolerance: null
+oracle_supports_chat_template_kwargs: null
+oracle_answer_format: true_false
+oracle_response_mode: structured
+
+cls_dev_prompt_template_name: class_equivalence
+cls_usr_prompt_template_name: one_level_of_parents_and_synonyms
+prop_dev_prompt_template_name: property_equivalence
+prop_usr_prompt_template_name: null
+inst_dev_prompt_template_name: instance_equivalence
+inst_usr_prompt_template_name: null
+
+sibling_strategy: sbert
+sibling_model: null         
+sibling_max_candidates: null
+
+few_shot_k: 0
+few_shot_seed: 42
+few_shot_negative_strategy: hard
+
+generate_extended_mappings_to_ask_oracle: false
+
+refinement_strategy: logmap
+ontology_domain: security
+ontology_vocabulary: default
