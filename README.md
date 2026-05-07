@@ -310,19 +310,9 @@ For matchers that rely on an external JAR, refer to [`aml.py`](src/diso_mappings
 - `FacilityOntology` requires a raised recursion limit. `scripts/run_matcher.py` sets `sys.setrecursionlimit(48000)` for this reason.
 - DeepOnto patches. The pinned DeepOnto fork patches minor upstream issues.
 
-## Citations
-
-If you use this pipeline, please consider citing the underlying matchers and related materials:
-
-- **AML** — Faria, Daniel, et al. "The agreementmakerlight ontology matching system." OTM Confederated International Conferences" On the Move to Meaningful Internet Systems". Berlin, Heidelberg: Springer Berlin Heidelberg, 2013.
-- **LogMap / LogMapLt** — Jiménez-Ruiz, Ernesto, and Bernardo Cuenca Grau. "Logmap: Logic-based and scalable ontology matching." International Semantic Web Conference. Berlin, Heidelberg: Springer Berlin Heidelberg, 2011.
-- **BERTMap** — He, Yuan, et al. "BERTMap: a BERT-based ontology alignment system." Proceedings of the AAAI Conference on Artificial Intelligence. Vol. 36. No. 5. 2022.
-- **DeepOnto** — He, Yuan, et al. "DeepOnto: A Python package for ontology engineering with deep learning." Semantic Web 15.5 (2024): 1991-2004.
-- **DISO** — Jiménez-Ruiz, E., Cotovio, P., Dilworth, J., Herron, D. *DISO: Defence, Intelligence and Security Ontologies* (v1.0.0). Zenodo, 2026. [https://doi.org/10.5281/zenodo.20059507](https://doi.org/10.5281/zenodo.20059507)
-
 ### Cite _(this work)_
 
-Citation will be added when the accompanying resource paper is published. In the interim, please cite the [DISO collection](https://doi.org/10.5281/zenodo.20059507) as the canonical citable artefact in this ecosystem.
+Citation will be added if the accompanying resource paper is published. In the interim, please cite the [DISO collection](https://doi.org/10.5281/zenodo.20059507) as the canonical citable artefact in this ecosystem.
 
 ### Contributors
 
@@ -333,6 +323,8 @@ Citation will be added when the accompanying resource paper is published. In the
 This research was supported by Turing Innovations Limited and The Alan Turing Institute’s Defence and Security Programme via the [GUARD project](https://ernestojimenezruiz.github.io/projects/guard/). We thank the maintainers of the matching systems and supporting libraries: [AgreementMakerLight](https://github.com/AgreementMakerLight/AML-Project), [LogMap](https://github.com/ernestojimenezruiz/logmap-matcher), [BERTMap](https://github.com/krr-oxford/bertmap), and [DeepOnto](https://github.com/KRR-Oxford/DeepOnto) _(that this pipeline depends on)_.
 
 ## References
+
+_If you use this pipeline, please consider citing the underlying matchers and related materials._
 
 * [1] AgreementMakerLight: [https://github.com/AgreementMakerLight/AML-Project](https://github.com/AgreementMakerLight/AML-Project) - Faria, D., Pesquita, C., Santos, E., Palmonari, M., Cruz, I. F., & Couto, F. M. (2013, September). The agreementmakerlight ontology matching system. In OTM Confederated International Conferences" On the Move to Meaningful Internet Systems" (pp. 527-541). Berlin, Heidelberg: Springer Berlin Heidelberg.
 * [2] LogMap: [https://github.com/ernestojimenezruiz/logmap-matcher](https://github.com/ernestojimenezruiz/logmap-matcher) - Jiménez-Ruiz, E., & Cuenca Grau, B. (2011, October). Logmap: Logic-based and scalable ontology matching. In International Semantic Web Conference (pp. 273-288). Berlin, Heidelberg: Springer Berlin Heidelberg.
