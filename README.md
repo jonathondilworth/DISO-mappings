@@ -1,10 +1,10 @@
 # DISO-mappings
 
-DISO-mappings, a reproducible Ontology Matching (OM) pipeline for pairwise alignment generation across the [DISO ontologies](https://github.com/city-artificial-intelligence/diso): over 60 public OWL ontologies in defence, intelligence, and security. The pipeline includes adapters for AML [1], LogMap & LogMapLt [2], and BERTMap & BERTMapLt [3]. Each adapter produces correspondences in the OAEI RDF Alignment Format. This effort directly supports the establishment of a [new OAEI track for defence and security](https://github.com/city-artificial-intelligence/diso-oaei).
+DISO-mappings, a reproducible Ontology Matching (OM) pipeline for pairwise alignment generation across the [DISO ontologies](https://github.com/city-artificial-intelligence/diso): over 60 public OWL ontologies in defence, intelligence, and security. The pipeline includes adapters for AML [[1]](#references), LogMap & LogMapLt [[2]](#references), and BERTMap & BERTMapLt [[3, 4]](#references). Each adapter produces correspondences in the OAEI RDF Alignment Format. This effort directly supports the establishment of a [new OAEI track for defence and security](https://github.com/city-artificial-intelligence/diso-oaei).
 
 ## Project Status
 
-The matching pipeline is complete and can be readily extended. The consensus-derived silver-standard reference alignment has been obtained. Users can reproduce this preliminary reference alignment using the [Makefile](./Makefile) shipped within this repository or by using [the OAEI evaluation tools repository](https://github.com/ernestojimenezruiz/oaei-evaluation). AML and LogMap are currently distributed as precompiled JARs in this repository. However, future releases will allow matchers to be installable from a _distributed registry_. BERTMap is supported via [DeepOnto](https://github.com/KRR-Oxford/DeepOnto); we include a [vendor fork of the project](https://github.com/jonathondilworth/DeepOnto) as a dependency. Regarding shipped adaptors: Matcha is proprietary and not publicly released. The LogMapLLM adapter is available to use under the [feature/logmap-llm](#) branch, but should be considered experimental.
+The matching pipeline is complete and can be readily extended. The consensus-derived silver-standard reference alignment has been obtained. Users can reproduce this preliminary reference alignment using the [Makefile](./Makefile) shipped within this repository or by using [the OAEI evaluation tools repository](https://github.com/ernestojimenezruiz/oaei-evaluation). AML and LogMap are currently distributed as precompiled JARs in this repository. However, future releases will allow matchers to be installable from a _distributed registry_. BERTMap is supported via [DeepOnto](https://github.com/KRR-Oxford/DeepOnto) [[4]](#references); we include a [vendor fork of the project](https://github.com/jonathondilworth/DeepOnto) as a dependency. Regarding shipped adaptors: Matcha is proprietary and not publicly released. The LogMapLLM adapter is available to use under the [feature/logmap-llm](https://github.com/city-artificial-intelligence/DISO-mappings/tree/feature/logmap-llm) branch, but should be considered experimental.
 
 ## Requirements
 
@@ -41,7 +41,7 @@ The default `make` pipeline performs the following actions (see the [Makefile](M
 
 1. `make download` fetches the DISO release tarball into `data/diso/`.
 2. `make compact` extracts `diso-compact.zip`, walks the cluster directories, and writes the ontology registry to `data/diso-compact/_registry.yaml`.
-3. `make labels` derives labels from the class local name for any classes lacking an rdfs:label annotation. The process is idempotent; classes with existing labels remain unchanged.
+3. `make labels` derives labels from the class local name for any classes lacking an `rdfs:label` annotation. The process is idempotent; classes with existing labels remain unchanged.
 4. `make parseable` removes obsolete `owl:imports` triples and converts `d3fend.ttl` to RDF/XML for AML compatibility. This step registers `*-noimports` and `d3fend-rdf-xml` ontologies as referenced in the [paper pairs](./configs/pairs.paper.yaml).
 5. `make mappings PAIRS=configs/pairs.paper.yaml` runs each matcher over the eight ontology pairs in `configs/pairs.paper.yaml`. Writes results to `runs/<matcher>/<UTC-timestamp>/.` with subdirectories: `alignments`, `failed`, and `logs`.
 6. `make consensus` builds the consensus reference alignment over `PAIRS` via their latest runs. Writes consensus output to `consensus/<UTC-timestamp>/.`.
@@ -58,7 +58,7 @@ To pass extra arguments to `scripts/run_matcher.py`:
 make mappings MATCHER=bertmap PAIRS=configs/pairs.paper.yaml ARGS='--verbose --timeout=7200 --force'
 ```
 
-`ARGS` are forwarded as specified. We reccomend you run `make help` for a summary of available Make targets. Additional documentation is provided under the [docs directory](./docs).
+`ARGS` are forwarded as specified. We recommend you run `make help` for a summary of available Make targets.
 
 ## Project Structure
 
@@ -79,7 +79,7 @@ make mappings MATCHER=bertmap PAIRS=configs/pairs.paper.yaml ARGS='--verbose --t
 │   └── logmap                  
 ├── pyproject.toml              
 ├── README.md                   
-├── scripts                         # CLI entry points (called by the Makefile)
+├── scripts                 # CLI entry points (called by the Makefile)
 │   ├── consensus.py             
 │   ├── download_diso.py         
 │   ├── extract_compact_diso.py  
@@ -88,15 +88,15 @@ make mappings MATCHER=bertmap PAIRS=configs/pairs.paper.yaml ARGS='--verbose --t
 │   └── run_matcher.py           
 └── src
     └── diso_mappings
-	    ├── consensus
-	    │ ├── consensus.py
-	    │ ├── discovery.py
-	    │ ├── __init__.py
-	    │ ├── labels.py
-	    │ ├── stats.py
-	    │ ├── unique.py
-	    │ ├── voting.py
-	    │ └── writers.py
+        ├── consensus
+        │   ├── consensus.py
+        │   ├── discovery.py
+        │   ├── __init__.py
+        │   ├── labels.py
+        │   ├── stats.py
+        │   ├── unique.py
+        │   ├── voting.py
+        │   └── writers.py
         ├── constants.py        # Configurable project-wide constants
         ├── __init__.py         
         ├── io                  
@@ -128,19 +128,19 @@ Note that you can expect three additional directories to be created during use:
 
 ## Matchers
 
-| Name         | Family  | Shipped      | Confidence                                | GPU required | Notes                                         |
-| ------------ | ------- | ------------ | ----------------------------------------- | ------------ | --------------------------------------------- |
-| `aml`        | AML     | Yes          | Yes                                       | No           | AgreementMakerLight 3.2; auto mode only       |
-| `logmap`     | LogMap  | Yes          | Yes                                       | No           | LogMap 2 with logical repair                  |
-| `logmap_lt`  | LogMap  | Yes          | No                                        | No           | LogMap-Lite; lexical only, scores are uniform |
-| `logmap_llm` | LogMap  | [@Branch](#) | Yes                                       | Yes          | LogMap + use of vLLM to aid as an oracle      |
-| `bertmap`    | BERTMap | Yes          | Yes  <small>*(high thresholding)*</small> | Yes          | BERT fine-tuning + LogMap repair (DeepOnto)   |
-| `bertmap_lt` | BERTMap | Yes          | Yes  <small>*(high thresholding)*</small> | No           | String-distance variant (DeepOnto)            |
-| `matcha`     | Matcha  | No           | Yes                                       | No           | Proprietary closed source (as of May 2026).   |
+| Name         | Family  | Shipped                                                                                                       | Confidence                                | GPU required | Notes                                         |
+| ------------ | ------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------- | ------------ | --------------------------------------------- |
+| `aml`        | AML     | Yes                                                                                                           | Yes                                       | No           | AgreementMakerLight 3.2; auto mode only       |
+| `logmap`     | LogMap  | Yes                                                                                                           | Yes                                       | No           | LogMap 2 with logical repair                  |
+| `logmap_lt`  | LogMap  | Yes                                                                                                           | No                                        | No           | LogMap-Lite; lexical only, scores are uniform |
+| `logmap_llm` | LogMap  | [Branch](https://github.com/city-artificial-intelligence/DISO-mappings/tree/feature/logmap-llm) | Yes                                       | Yes          | LogMap + use of vLLM to aid as an oracle      |
+| `bertmap`    | BERTMap | Yes                                                                                                           | Yes  <small>*(high thresholding)*</small> | Yes          | BERT fine-tuning + LogMap repair (DeepOnto)   |
+| `bertmap_lt` | BERTMap | Yes                                                                                                           | Yes  <small>*(high thresholding)*</small> | No           | String-distance variant (DeepOnto)            |
+| `matcha`     | Matcha  | No                                                                                                            | Yes                                       | No           | Proprietary closed source (as of May 2026).   |
 
-The [`family` attribute](#) is used by [consensus component](#) to prevent correlated matchers from artificially inflating agreement unfairly. For instance, a mapping produced by both BERTMap and BERTMapLt are counted as a single entry toward the "BERTMap family" rather than as two separate entries. Precise consensus semantics are provided under [docs](./docs/).
+The [`family` attribute](src/diso_mappings/matchers/base.py) is used by the [consensus component](src/diso_mappings/consensus/) to prevent correlated matchers from artificially inflating agreement unfairly. For instance, a mapping produced by both BERTMap and BERTMapLt is counted as a single entry toward the "BERTMap family" rather than as two separate entries. Singleton families (`aml`, `matcha`) cast one vote each — this is by design, not a count error.
 
-Configuration for each matcher is specified in `configs/<matcher>.yaml`. The configuration keys are documented within these files and in the corresponding adapter module’s doc-string.
+Configuration for each matcher is specified in `configs/<matcher>.yaml`. The configuration keys are documented within these files and in the corresponding adapter module's doc-string.
 
 ## Pairs
 
@@ -192,7 +192,24 @@ for m in alignment.mappings[:5]:
 
 ### Consensus
 
-TODO
+Each invocation of `scripts/consensus.py` (called from `make consensus`) creates a timestamped run directory:
+
+```
+consensus/<UTC-timestamp>/
+├── manifest.yaml                       # run metadata + per-pair summary
+└── pairs/
+    └── <source>__<target>/
+        ├── consensus.tsv               # consolidated table; family_votes column
+        ├── per-vote/
+        │   ├── consensus-2.tsv         # mappings agreed by >= 2 families
+        │   ├── consensus-2.rdf         # OAEI RDF, >= 2 families
+        │   └── consensus-N.{tsv,rdf}   # up to the maximum observed vote count
+        ├── unique-by-system/           # one TSV per matcher (incl. empties)
+        ├── unique-by-family/           # one TSV per family (incl. empties)
+        └── stats.txt                   # OAEI-evaluation format Vote-N statistics
+```
+
+The silver-standard reference alignment is `consensus-N.rdf` for whichever vote threshold is appropriate. For our case, we opt to use `consensus-2.rdf` as the default for the eight pairs reported in the paper (a mapping is accepted if at least two matcher families agree). The `unique-by-system/` and `unique-by-family/` outputs report mappings produced by exactly one matcher or family; these are the candidates flagged for manual review.
 
 ## Extending the Pipeline: Adding a New Matcher
 
@@ -277,11 +294,11 @@ For matchers that rely on an external JAR, refer to [`aml.py`](src/diso_mappings
 | ----------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Download + extract DISO compact                                   | COMPLETE                        | Makes a cURL request to the official DISO repo (downloading all DISO ontologies), then  extracts the compact DISO variant ontologies.                                                                                                                                                                                                                                          |
 | Local **ontology registry** + pair configs                        | COMPLETE                        | The local Ontology Registry walks a specified dir and collects any recognisable ontologies,  placing them (along with a path relative to their parent dir) in a project-wide directory.                                                                                                                                                                                        |
-| Label enrichment + parseability fixes                             | COMPLETE                        | The term 'label enrichment' defined simply: given an OWL ontology whose classes do not  all have an `rdfs:label` annotation property, produce attach one by deriving it from an IRI-extracted local name (fixes parseability issues for rdflib).                                                                                                                               |
+| Label enrichment + parseability fixes                             | COMPLETE                        | The term 'label enrichment' defined simply: given an OWL ontology whose classes do not  all have an `rdfs:label` annotation property, attach one by deriving it from an IRI-extracted local name (fixes parseability issues for rdflib).                                                                                                                                       |
 | Matcher adapters (AML, LogMap, LogMapLt, BERTMap, BERTMapLt)      | COMPLETE                        | Each matcher adapter simply wraps existing ontology matching systems, in whatever form  they may be provisioned. For JARs/compiled binaries, these are invoked as subprocesses; we maintain this separation for modular python matchers by implementing python workers.                                                                                                        |
 | OAEI RDF read/write                                               | COMPLETE                        | We provide an OAEI-compliant parser with multiple modes: (1) *lenient*: allowing for users to specify translation rules between OM system output, silently canonicalising any matchers output into OAEI-compliant form; (2) *strict*, similar to lenient, but raises a warning for each translation instance; and (3) *draconian*, raises an exception for ANY non-compliance. |
-| **Consensus / silver-standard aggregation (reference alignment)** | COMPLETE                 | We combine output mappings from multiple ontology matching systems to obtain a silver standard reference alignment. The specific logic used to obtain this reference alignment along with the procedure is documented at [this repo](). We intend to include a `make consensus` and `make reference-alignment` entry point in the future.                                      |
-| LogMap-LLM & proprietary adapters                                 | _not shipped in this release_   | LogMap-LLM is a heavy external dependency that we include as optional within a [separate branch](#); however, it is currently omitted from the main branch. Adapters for reported alignments obtained by proprietary software (i.e., Matcha) are not shipped due to licensing reasons.                                                                                                     |
+| **Consensus / silver-standard aggregation (reference alignment)** | COMPLETE                        | We combine output mappings from multiple ontology matching systems to obtain a silver standard reference alignment. The pipeline is exposed via `make consensus`; output layout and discovery semantics are documented under [Consensus](#consensus). The implementation lives in `src/diso_mappings/consensus/`.                                                    |
+| LogMap-LLM & proprietary adapters                                 | _not shipped in this branch / release_   | LogMap-LLM is a heavy external dependency that we include as optional within a [separate branch](https://github.com/city-artificial-intelligence/DISO-mappings/tree/feature/logmap-llm); however, it is currently omitted from the main branch. Adapters for reported alignments obtained by proprietary software (i.e., Matcha) are not shipped due to licensing reasons.                                                                                                     |
 | Ontology Matching System Registry                                 | _future project (out of scope)_ | Ideally, we would like users to easily download commonly used adapters and register their  own custom systems with adapters within a distributed registry, making benchmark results easy to obtain, automatic to register and *(optionally)* viewable on public leaderboards.                                                                                                  |
 
 ## Known issues and limitations
@@ -301,20 +318,25 @@ If you use this pipeline, please consider citing the underlying matchers and rel
 - **LogMap / LogMapLt** — Jiménez-Ruiz, Ernesto, and Bernardo Cuenca Grau. "Logmap: Logic-based and scalable ontology matching." International Semantic Web Conference. Berlin, Heidelberg: Springer Berlin Heidelberg, 2011.
 - **BERTMap** — He, Yuan, et al. "BERTMap: a BERT-based ontology alignment system." Proceedings of the AAAI Conference on Artificial Intelligence. Vol. 36. No. 5. 2022.
 - **DeepOnto** — He, Yuan, et al. "DeepOnto: A Python package for ontology engineering with deep learning." Semantic Web 15.5 (2024): 1991-2004.
-- **DISO** — Herron, D. _The DISO Collection of Defence, Intelligence and Security Ontologies._ See [https://github.com/city-artificial-intelligence/diso](https://github.com/city-artificial-intelligence/diso).
+- **DISO** — Jiménez-Ruiz, E., Cotovio, P., Dilworth, J., Herron, D. *DISO: Defence, Intelligence and Security Ontologies* (v1.0.0). Zenodo, 2026. [https://doi.org/10.5281/zenodo.20059507](https://doi.org/10.5281/zenodo.20059507)
 
 ### Cite _(this work)_
 
-_(pending)_
+Citation will be added when the accompanying resource paper is published. In the interim, please cite the [DISO collection](https://doi.org/10.5281/zenodo.20059507) as the canonical citable artefact in this ecosystem.
 
 ### Contributors
 
 [Ernesto Jimenez-Ruiz](https://ernestojimenezruiz.github.io/), [Pedro Cotovio](https://pedrocotovio.github.io/), [Jon Dilworth](https://dilworth.io/) and [Dave Herron](https://djherron.github.io/).
 
+## Acknowledgements
+
+This research was supported by Turing Innovations Limited and The Alan Turing Institute’s Defence and Security Programme via the [GUARD project](https://ernestojimenezruiz.github.io/projects/guard/). We thank the maintainers of the matching systems and supporting libraries: [AgreementMakerLight](https://github.com/AgreementMakerLight/AML-Project), [LogMap](https://github.com/ernestojimenezruiz/logmap-matcher), [BERTMap](https://github.com/krr-oxford/bertmap), and [DeepOnto](https://github.com/KRR-Oxford/DeepOnto) _(that this pipeline depends on)_.
+
 ## References
 
-* [1] AgreementMakerLight: [https://github.com/AgreementMakerLight/AML-Project](https://github.com/AgreementMakerLight/AML-Project)
-* [2] LogMap: [https://github.com/ernestojimenezruiz/logmap-matcher](https://github.com/ernestojimenezruiz/logmap-matcher)
-* [3] BERTMap (via DeepOnto): [https://github.com/KRR-Oxford/DeepOnto](https://github.com/KRR-Oxford/DeepOnto)
-* [4] DISO repository: [https://github.com/city-artificial-intelligence/diso](https://github.com/city-artificial-intelligence/diso)
-* OAEI Alignment Format: [https://moex.gitlabpages.inria.fr/alignapi/format.html](https://moex.gitlabpages.inria.fr/alignapi/format.html)
+* [1] AgreementMakerLight: [https://github.com/AgreementMakerLight/AML-Project](https://github.com/AgreementMakerLight/AML-Project) - Faria, D., Pesquita, C., Santos, E., Palmonari, M., Cruz, I. F., & Couto, F. M. (2013, September). The agreementmakerlight ontology matching system. In OTM Confederated International Conferences" On the Move to Meaningful Internet Systems" (pp. 527-541). Berlin, Heidelberg: Springer Berlin Heidelberg.
+* [2] LogMap: [https://github.com/ernestojimenezruiz/logmap-matcher](https://github.com/ernestojimenezruiz/logmap-matcher) - Jiménez-Ruiz, E., & Cuenca Grau, B. (2011, October). Logmap: Logic-based and scalable ontology matching. In International Semantic Web Conference (pp. 273-288). Berlin, Heidelberg: Springer Berlin Heidelberg.
+* [3] BERTMap (via DeepOnto): [https://github.com/KRR-Oxford/DeepOnto](https://github.com/KRR-Oxford/DeepOnto) - He, Y., Chen, J., Dong, H., Horrocks, I., Allocca, C., Kim, T., & Sapkota, B. (2024). DeepOnto: A Python package for ontology engineering with deep learning. Semantic Web, 15(5), 1991-2004.
+* [4] BERTMap: [https://github.com/krr-oxford/bertmap](https://github.com/krr-oxford/bertmap) - He, Y., Chen, J., Antonyrajah, D., & Horrocks, I. (2022, June). BERTMap: a BERT-based ontology alignment system. In Proceedings of the AAAI Conference on Artificial Intelligence (Vol. 36, No. 5, pp. 5684-5691).
+* [5] DISO repository: [https://github.com/city-artificial-intelligence/diso](https://github.com/city-artificial-intelligence/diso) - Dilworth, J., Cotovio, P., Herron, D., Pesquita, C., & Jiménez-Ruiz, E. (2026). DISO: Defence, Intelligence and Security Ontologies (Version 1.0.0). Zenodo. https://doi.org/10.5281/zenodo.20059507
+* [6] OAEI Alignment Format: [https://moex.gitlabpages.inria.fr/alignapi/format.html](https://moex.gitlabpages.inria.fr/alignapi/format.html) - David, J., Euzenat, J., Scharffe, F., & Trojahn dos Santos, C. (2011). The alignment API 4.0. Semantic web, 2(1), 3-10.
